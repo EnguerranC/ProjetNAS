@@ -38,7 +38,6 @@ for i in range(nombre_AS):
 
 for i in range(nombre_AS) : #on parcours chaque AS
     nombre_routers_AS = config[liste_AS[i]]["Nombre_routeur"] #le nombre de routers dans l'AS
-    print(config[liste_AS[i]]["Donnees_routeurs"])
     liste_router = [config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Dynamips_ID"] for j in range(nombre_routers_AS)] #liste des routers dans l'AS
 
     for j in range(config[liste_AS[i]]["Nombre_routeur"]) : #on setup chaque router dans l'AS
@@ -52,12 +51,13 @@ for i in range(nombre_AS) : #on parcours chaque AS
 
             fichier_cfg.writelines([
                     "interface Loopback0\n",
-                    " ip address 127.0.0." + str(num_router) + str(MasqueToAddress(32)) + "\n"
+                    " ip address 127.0.0." + str(num_router) + " " + str(MasqueToAddress(32)) + "\n"
             ])
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : 
                 fichier_cfg.writelines([
                     " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n"
                 ])
+            fichier_cfg.write("!\n")
 
             ######### interfaces ########
 
@@ -81,7 +81,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     fichier_cfg.writelines([
                             "interface " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Interface"] + "\n",
                             " negotiation auto\n",
-                            " ip address " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"] + "\n",
+                            " ip address " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"] + "\n"
                         ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : #si l'AS courant est en ospf, il faut mettre le router en passive-interface
                         fichier_cfg.writelines([
@@ -94,13 +94,12 @@ for i in range(nombre_AS) : #on parcours chaque AS
 
 
             ######### routage bgp ########
-            fichier_cfg.writelines(["ip bgp-community new-format\n", "!\n"])
 
             fichier_cfg.writelines([
                 "router bgp " + "11" + liste_AS[i] + "\n",
                 " bgp router-id " + 3*(str(num_router) + ".") + str(num_router) + "\n",
                 " bgp log-neighbor-changes\n",
-                " no bgp default ipv4-unicast\n",
+                " no bgp default ipv4-unicast\n"
             ])
 
             if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #si c'est un router de bordure, on ajoute les neighbors des autres AS
@@ -131,8 +130,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
 
                 for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) : # ici la configuration des route map
                     fichier_cfg.writelines([
-                        "  neighbor " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split("/")[0][:-1] + k + " activate\n",
-                        "  neighbor " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split("/")[0][:-1] + k + " send-community\n"
+                        "  neighbor " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split("/")[0][:-1] + k + " activate\n"
                     ])
                     if config[liste_AS[i]]["Type_AS"] == "AS" and config[k]["Type_AS"] != "AS" : # on ne configure pas les route-map pour les AS
                         fichier_cfg.writelines([
@@ -142,8 +140,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                             
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
-                    "  neighbor 5000::" + str([e for e in liste_router if e != num_router][k]) + " activate\n",
-                    "  neighbor 5000::" + str([e for e in liste_router if e != num_router][k]) + " send-community\n"
+                    "  neighbor 5000::" + str([e for e in liste_router if e != num_router][k]) + " activate\n"
                 ])
 
             if config[liste_AS[i]]["Type_AS"] == "client" :
