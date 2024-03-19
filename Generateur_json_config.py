@@ -49,7 +49,7 @@ config = {
             }
          },
          4 : {
-            4 : {
+            4 : { 
                "Num_routeur_bordeur_remote" : 1,
                "Adresse" : "192.168.3.1/30",
                "Interface" : ""

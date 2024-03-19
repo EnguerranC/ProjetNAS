@@ -8,9 +8,24 @@ def masque_reseau(adresse) : #fonction qui retourne la partie réseau d'une adre
     masque = int(adresse.split('/')[1])
     masque_res = ""
     liste_adresse = adresse.split('/')[0].split('.')
-    for i in range(int(masque/16)) :
+    for i in range(int(masque/8)) :
         masque_res += liste_adresse[i] + '.'
     return masque_res + f'/{masque}'
+
+def MasqueToAddress(masque) :
+    address = ""
+    masque = int(masque)
+    for i in range (4) :
+        octet = 0
+        for j in range(8) :
+            if masque > 0 :
+                octet += 2**(7-j)
+                masque -= 1
+        address += str(octet) + "."
+    address = address[:-1]
+    while len(address.split(".")) < 4 :
+        address += ".0"
+    return address
 
 nombre_routers = 0
 liste_AS = list(config.keys())
@@ -23,32 +38,26 @@ for i in range(nombre_AS):
 
 for i in range(nombre_AS) : #on parcours chaque AS
     nombre_routers_AS = config[liste_AS[i]]["Nombre_routeur"] #le nombre de routers dans l'AS
+    print(config[liste_AS[i]]["Donnees_routeurs"])
     liste_router = [config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Dynamips_ID"] for j in range(nombre_routers_AS)] #liste des routers dans l'AS
 
     for j in range(config[liste_AS[i]]["Nombre_routeur"]) : #on setup chaque router dans l'AS
-        num_router = config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Dynamips_ID"]
+        num_router = config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Dynamips_ID"] #le numero du router
 
         with open('fichiers_cfg/R' + str(config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Dynamips_ID"]) + "_configs_i" + str(num_router) + "_startup-config.cfg",'w') as fichier_cfg :
 
             fichier_cfg.writelines(['!\n', 'hostname ' + config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Nom"] + '\n', '!\n'])
-            
-            fichier_cfg.writelines(["ipv6 unicast-routing\n", '!\n'])
 
             ######### loopback ########
 
             fichier_cfg.writelines([
                     "interface Loopback0\n",
-                    " no ip address\n",
-                    " ipv6 address " + config[liste_AS[i]]["Maque_loopback"].split("::")[0] + "::" + str(num_router) + "/128\n"
-                            ])
-            if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : # // Rajouter le protocol RIP aussi dans les loopback même si en soit c'est pas vraiment utile
+                    " ip address 127.0.0." + str(num_router) + str(MasqueToAddress(32)) + "\n"
+            ])
+            if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : 
                 fichier_cfg.writelines([
-                    " ipv6 enable\n", 
-                    " ipv6 ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n"
+                    " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n"
                 ])
-            elif config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "RIPng" :
-                fichier_cfg.write(" ipv6 rip RIPng enable\n")
-            fichier_cfg.write('!\n')
 
             ######### interfaces ########
 
@@ -56,19 +65,12 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 if config[liste_AS[i]]["Matrice_adjacence"][j][k] == 1 : # S'il y a un lien on crée une interface
                     fichier_cfg.writelines([
                         "interface " + config[liste_AS[i]]["Matrice_adressage_interface"][j][k][1] + "\n",
-                        " no ip address\n",
                         " negotiation auto\n",
-                        " ipv6 address " + config[liste_AS[i]]["Matrice_adressage_interface"][j][k][0] + "\n"
+                        " ip address " + config[liste_AS[i]]["Matrice_adressage_interface"][j][k][0].split('/')[0] + " " + str(MasqueToAddress(config[liste_AS[i]]["Matrice_adressage_interface"][j][k][0].split('/')[1])) + "\n"
                     ])
-                    if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "RIPng" :
+                    if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                         fichier_cfg.writelines([
-                            " ipv6 enable\n",
-                            " ipv6 rip RIPng enable\n"
-                        ])
-                    elif config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
-                        fichier_cfg.writelines([
-                            " ipv6 enable\n",
-                            " ipv6 ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n"
+                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n"
                         ])
                     fichier_cfg.write("!\n")
 
@@ -78,14 +80,12 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) :
                     fichier_cfg.writelines([
                             "interface " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Interface"] + "\n",
-                            " no ip address\n",
                             " negotiation auto\n",
-                            " ipv6 address " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"] + "\n",
-                            " ipv6 enable\n"
+                            " ip address " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"] + "\n",
                         ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : #si l'AS courant est en ospf, il faut mettre le router en passive-interface
                         fichier_cfg.writelines([
-                            " ipv6 ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n",
+                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n",
                             "!\n",
                             "router ospf " + liste_AS[i] + "\n",
                             " passive-interface " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Interface"] + "\n"
@@ -154,15 +154,6 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 fichier_cfg.writelines([
                     "ipv6 router ospf " + liste_AS[i] + "\n",
                     " router-id " + 3*(str(num_router) + ".") + str(num_router) + "\n",
-                    "!\n"
-                ])
-
-            ######### Redistribute connected ########
-            
-            if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "RIPng" : #si le protocole du router est RIP, on active le redistribute connected
-                fichier_cfg.writelines([
-                    "ipv6 router rip RIPng\n",
-                    " redistribute connected\n",
                     "!\n"
                 ])
 
