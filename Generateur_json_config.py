@@ -28,79 +28,56 @@ config = {
                              [1,0,1,0],
                              [0,1,0,1],
                              [0,0,1,0]],
-      "Masque_reseau" : "111::0/48",
-      "Maque_loopback" : "5000::0/64",
+      "Masque_reseau" : "192.168.0.0/28",
       "Matrice_adressage_interface" : Matrice_addressage_vide([], 4),
-      "Donnees_routeurs" : { 
+      "Donnees_routeurs" : {
       },
       "Routage_intraAS" : { # Infos concernant le routage intraAS
-         "Protocol" : "RIPng" 
+         "Protocol" : "OSPF"
       },
       "Routage_interAS":{ # Infos concernant le routage interAS
-         3 : { # Numero du routeur bordeur
+         1 : { # Numero du routeur bordeur
             2 : { # Numero de l'AS remote
-               "Num_routeur_bordeur_remote" : 3, # Numero du routeur remote
-               "Adresse" : "", # Adresse de l'interface liée au routeur remote
+               "Num_routeur_bordeur_remote" : 1, # Numero du routeur remote
+               "Adresse" : "192.168.1.1/30", # Adresse de l'interface liée au routeur remote
+               "Interface" : "" # Interface liée au routeur remote
+            },
+            3 : { # Numero de l'AS remote
+               "Num_routeur_bordeur_remote" : 1, # Numero du routeur remote
+               "Adresse" : "192.168.2.1/30", # Adresse de l'interface liée au routeur remote
                "Interface" : "" # Interface liée au routeur remote
             }
          },
-         2 : {
-            3 : {
-               "Num_routeur_bordeur_remote" : 1,
-               "Adresse" : "",
-               "Interface" : ""
-            }
-         },
-         1 : {
+         4 : {
             4 : {
                "Num_routeur_bordeur_remote" : 1,
-               "Adresse" : "",
+               "Adresse" : "192.168.3.1/30",
                "Interface" : ""
-            }
-         },
-         4 : {
-            5 : {
-               "Num_routeur_bordeur_remote" : 1,
-               "Adresse" : "",
-               "Interface" : ""
+            },
+            5 : { # Numero de l'AS remote
+               "Num_routeur_bordeur_remote" : 1, # Numero du routeur remote
+               "Adresse" : "192.168.4.1/30", # Adresse de l'interface liée au routeur remote
+               "Interface" : "" # Interface liée au routeur remote
             }
          }
-      },
+      }
    },
    2 : {
-      "Nombre_routeur" : 4,
-      "Type_AS" : "AS",
-      "Matrice_adjacence" : [[0,1,0,0],
-                             [1,0,1,0],
-                             [0,1,0,1],
-                             [0,0,1,0]],
-      "Masque_reseau" : "112::0/48",
-      "Maque_loopback" : "5000::0/64",
-      "Matrice_adressage_interface" : Matrice_addressage_vide([], 4),
+      "Nombre_routeur" : 1,
+      "Type_AS" : "ClientA",
+      "Matrice_adjacence" : [[0]],
+      "Masque_reseau" : "0.0.0.0/28",
+      "Matrice_adressage_interface" : Matrice_addressage_vide([], 1),
       "Donnees_routeurs" : {
       },
       "Routage_intraAS" : {
          "Protocol" : "OSPF"
       },
       "Routage_interAS":{
-         3 : {
-            1 : {
-               "Num_routeur_bordeur_remote" : 3,
-               "Adresse" : "",
-               "Interface" : ""
-            }
-         },
-         2 : {
-            3 : {
-               "Num_routeur_bordeur_remote" : 1,
-               "Adresse" : "",
-               "Interface" : ""
-            }
-         },
          1 : {
-            6 : {
+            1 : {
                "Num_routeur_bordeur_remote" : 1,
-               "Adresse" : "",
+               "Adresse" : "192.168.1.2/30",
                "Interface" : ""
             }
          }
@@ -108,97 +85,67 @@ config = {
    },
    3 : {
       "Nombre_routeur" : 1,
-      "Type_AS" : "provider",
+      "Type_AS" : "ClientA",
       "Matrice_adjacence" : [[0]],
-      "Masque_reseau" : "113::0/48",
-      "Maque_loopback" : "5000::0/64",
+      "Masque_reseau" : "0.0.0.0/28",
       "Matrice_adressage_interface" : Matrice_addressage_vide([], 1),
       "Donnees_routeurs" : {
       },
       "Routage_intraAS" : {
-         "Protocol" : ""
+         "Protocol" : "OSPF"
       },
       "Routage_interAS":{
          1 : {
-            2 : {
-               "Num_routeur_bordeur_remote" : 1,
-               "Adresse" : "",
-               "Interface" : ""
-            },
             1 : {
-               "Num_routeur_bordeur_remote" : 2,
-               "Adresse" : "",
+               "Num_routeur_bordeur_remote" : 4,
+               "Adresse" : "192.168.2.2/30",
                "Interface" : ""
             }
-         }         
+         }
       }
    },
    4 : {
       "Nombre_routeur" : 1,
-      "Type_AS" : "peer",
+      "Type_AS" : "ClientB",
       "Matrice_adjacence" : [[0]],
-      "Masque_reseau" : "114::0/48",
-      "Maque_loopback" : "5000::0/64",
+      "Masque_reseau" : "0.0.0.0/28",
       "Matrice_adressage_interface" : Matrice_addressage_vide([], 1),
       "Donnees_routeurs" : {
       },
       "Routage_intraAS" : {
-         "Protocol" : ""
+         "Protocol" : "OSPF"
       },
       "Routage_interAS":{
          1 : {
             1 : {
-               "Num_routeur_bordeur_remote" : 1,
-               "Adresse" : ""
+               "Num_routeur_bordeur_remote" : 4,
+               "Adresse" : "192.168.3.2/30",
+               "Interface" : ""
             }
          }
       }
    },
    5 : {
       "Nombre_routeur" : 1,
-      "Type_AS" : "client",
+      "Type_AS" : "ClientB",
       "Matrice_adjacence" : [[0]],
-      "Masque_reseau" : "115::0/48",
-      "Maque_loopback" : "5000::0/64",
+      "Masque_reseau" : "0.0.0.0/28",
       "Matrice_adressage_interface" : Matrice_addressage_vide([], 1),
       "Donnees_routeurs" : {
       },
       "Routage_intraAS" : {
-         "Protocol" : ""
+         "Protocol" : "OSPF"
       },
       "Routage_interAS":{
          1 : {
             1 : {
-               "Num_routeur_bordeur_remote" : 4,
-               "Adresse" : "",
+               "Num_routeur_bordeur_remote" : 1,
+               "Adresse" : "192.168.4.2/30",
                "Interface" : ""
             }
          }
       }
-   },
-   6 : {
-      "Nombre_routeur" : 1,
-      "Type_AS" : "client",
-      "Matrice_adjacence" : [[0]],
-      "Masque_reseau" : "116::0/48",
-      "Maque_loopback" : "5000::0/64",
-      "Matrice_adressage_interface" : Matrice_addressage_vide([], 1),
-      "Donnees_routeurs" : {
-      },
-      "Routage_intraAS" : {
-         "Protocol" : ""
-      },
-      "Routage_interAS":{
-         1 : {
-            2 : {
-               "Num_routeur_bordeur_remote" : 2,
-               "Adresse" : "",
-               "Interface" : ""
-            }
-         }
-      }
-   },
-   
+   }
 }
 """
 Generateur de la base de donnee des routeurs : Num_routeur, Nom, Dynamips_ID
@@ -210,7 +157,7 @@ Dynamips_ID = 1
 for i in range(1,len(config)) :
    for j in range(1, config[i]["Nombre_routeur"]+1) :
       Num_routeur = j
-      config[i]["Donnees_routeurs"][Num_routeur] = {"Nom":"AS"+str(i)+"_R"+str(j) , "Dynamips_ID":Dynamips_ID  , "Attributs":""}
+      config[i]["Donnees_routeurs"][Num_routeur] = {"Nom":"AS"+str(i)+"_R"+str(j) , "Dynamips_ID":Dynamips_ID}
       Dynamips_ID = Dynamips_ID +1
 
 """ 
@@ -220,6 +167,7 @@ Pour trouver les interfaces d'un routeur d'une AS il suffit de lire la ligne cor
 """
 def Adressage_AS(Num_AS , Matrice_adjacence, Nombre_routeur) :
    nb_connexions = [0 for i in range(Nombre_routeur)]
+   num_res = 0
    for routeur in range(Nombre_routeur) :
       for lien in range(routeur,Nombre_routeur) :
          if Matrice_adjacence[routeur][lien] :
@@ -228,19 +176,16 @@ def Adressage_AS(Num_AS , Matrice_adjacence, Nombre_routeur) :
             interface1 = "GigabitEthernet" + str(nb_connexions[routeur]) + "/0"
             interface2 = "GigabitEthernet" + str(nb_connexions[lien]) + "/0"
 
-            adresse_unique1 = config[Num_AS]["Masque_reseau"][:3]+":0:0:"+str(routeur+1)+"::"+"1/64"
-            adresse_unique2 = config[Num_AS]["Masque_reseau"][:3]+":0:0:"+str(routeur+1)+"::"+"2/64"
+            adresse_unique1 = config[Num_AS]["Masque_reseau"][:7]+".0."+str(num_res+1)+"/30"
+            adresse_unique2 = config[Num_AS]["Masque_reseau"][:7]+".0."+str(num_res+2)+"/30"
             config[Num_AS]["Matrice_adressage_interface"][routeur][lien] = [adresse_unique1,interface1]
-            config[Num_AS]["Matrice_adressage_interface"][lien][routeur] = [adresse_unique2, interface2]
+            config[Num_AS]["Matrice_adressage_interface"][lien][routeur] = [adresse_unique2,interface2]
+            num_res += 4
       routeur+=1
       if routeur in list(config[Num_AS]["Routage_interAS"].keys()) :
          for remote_AS in list(config[Num_AS]["Routage_interAS"][routeur].keys()) :
             nb_connexions[routeur-1]+=1
             config[Num_AS]["Routage_interAS"][routeur][remote_AS]["Interface"] = "GigabitEthernet" + str(nb_connexions[routeur-1]) + "/0"
-            if Num_AS > remote_AS :
-               config[Num_AS]["Routage_interAS"][routeur][remote_AS]["Adresse"] = "2000:"+str(Num_AS)+str(remote_AS)+"::"+str(Num_AS)+"/32"
-            else :
-               config[Num_AS]["Routage_interAS"][routeur][remote_AS]["Adresse"] = "2000:"+str(remote_AS)+str(Num_AS)+"::"+str(Num_AS)+"/32"
 
 """
 Programme principal

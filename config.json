@@ -28,8 +28,7 @@
                 0
             ]
         ],
-        "Masque_reseau": "111::0/48",
-        "Maque_loopback": "5000::0/64",
+        "Masque_reseau": "192.168.0.0/28",
         "Matrice_adressage_interface": [
             [
                 [
@@ -37,7 +36,7 @@
                     ""
                 ],
                 [
-                    "111:0:0:1::1/64",
+                    "192.168.0.1/30",
                     "GigabitEthernet1/0"
                 ],
                 [
@@ -51,7 +50,7 @@
             ],
             [
                 [
-                    "111:0:0:1::2/64",
+                    "192.168.0.2/30",
                     "GigabitEthernet1/0"
                 ],
                 [
@@ -59,7 +58,7 @@
                     ""
                 ],
                 [
-                    "111:0:0:2::1/64",
+                    "192.168.0.5/30",
                     "GigabitEthernet2/0"
                 ],
                 [
@@ -73,7 +72,7 @@
                     ""
                 ],
                 [
-                    "111:0:0:2::2/64",
+                    "192.168.0.6/30",
                     "GigabitEthernet1/0"
                 ],
                 [
@@ -81,7 +80,7 @@
                     ""
                 ],
                 [
-                    "111:0:0:3::1/64",
+                    "192.168.0.9/30",
                     "GigabitEthernet2/0"
                 ]
             ],
@@ -95,7 +94,7 @@
                     ""
                 ],
                 [
-                    "111:0:0:3::2/64",
+                    "192.168.0.10/30",
                     "GigabitEthernet1/0"
                 ],
                 [
@@ -107,158 +106,62 @@
         "Donnees_routeurs": {
             "1": {
                 "Nom": "AS1_R1",
-                "Dynamips_ID": 1,
-                "Attributs": ""
+                "Dynamips_ID": 1
             },
             "2": {
                 "Nom": "AS1_R2",
-                "Dynamips_ID": 2,
-                "Attributs": ""
+                "Dynamips_ID": 2
             },
             "3": {
                 "Nom": "AS1_R3",
-                "Dynamips_ID": 3,
-                "Attributs": ""
+                "Dynamips_ID": 3
             },
             "4": {
                 "Nom": "AS1_R4",
-                "Dynamips_ID": 4,
-                "Attributs": ""
+                "Dynamips_ID": 4
             }
         },
         "Routage_intraAS": {
-            "Protocol": "RIPng"
+            "Protocol": "OSPF"
         },
         "Routage_interAS": {
-            "3": {
+            "1": {
                 "2": {
-                    "Num_routeur_bordeur_remote": 3,
-                    "Adresse": "2000:21::1/32",
-                    "Interface": "GigabitEthernet3/0"
-                }
-            },
-            "2": {
+                    "Num_routeur_bordeur_remote": 1,
+                    "Adresse": "192.168.1.1/30",
+                    "Interface": "GigabitEthernet2/0"
+                },
                 "3": {
                     "Num_routeur_bordeur_remote": 1,
-                    "Adresse": "2000:31::1/32",
+                    "Adresse": "192.168.2.1/30",
                     "Interface": "GigabitEthernet3/0"
-                }
-            },
-            "1": {
-                "4": {
-                    "Num_routeur_bordeur_remote": 1,
-                    "Adresse": "2000:41::1/32",
-                    "Interface": "GigabitEthernet2/0"
                 }
             },
             "4": {
+                "4": {
+                    "Num_routeur_bordeur_remote": 1,
+                    "Adresse": "192.168.3.1/30",
+                    "Interface": "GigabitEthernet2/0"
+                },
                 "5": {
                     "Num_routeur_bordeur_remote": 1,
-                    "Adresse": "2000:51::1/32",
-                    "Interface": "GigabitEthernet2/0"
+                    "Adresse": "192.168.4.1/30",
+                    "Interface": "GigabitEthernet3/0"
                 }
             }
         }
     },
     "2": {
-        "Nombre_routeur": 4,
-        "Type_AS": "AS",
+        "Nombre_routeur": 1,
+        "Type_AS": "ClientA",
         "Matrice_adjacence": [
             [
-                0,
-                1,
-                0,
-                0
-            ],
-            [
-                1,
-                0,
-                1,
-                0
-            ],
-            [
-                0,
-                1,
-                0,
-                1
-            ],
-            [
-                0,
-                0,
-                1,
                 0
             ]
         ],
-        "Masque_reseau": "112::0/48",
-        "Maque_loopback": "5000::0/64",
+        "Masque_reseau": "0.0.0.0/28",
         "Matrice_adressage_interface": [
             [
-                [
-                    "",
-                    ""
-                ],
-                [
-                    "112:0:0:1::1/64",
-                    "GigabitEthernet1/0"
-                ],
-                [
-                    "",
-                    ""
-                ],
-                [
-                    "",
-                    ""
-                ]
-            ],
-            [
-                [
-                    "112:0:0:1::2/64",
-                    "GigabitEthernet1/0"
-                ],
-                [
-                    "",
-                    ""
-                ],
-                [
-                    "112:0:0:2::1/64",
-                    "GigabitEthernet2/0"
-                ],
-                [
-                    "",
-                    ""
-                ]
-            ],
-            [
-                [
-                    "",
-                    ""
-                ],
-                [
-                    "112:0:0:2::2/64",
-                    "GigabitEthernet1/0"
-                ],
-                [
-                    "",
-                    ""
-                ],
-                [
-                    "112:0:0:3::1/64",
-                    "GigabitEthernet2/0"
-                ]
-            ],
-            [
-                [
-                    "",
-                    ""
-                ],
-                [
-                    "",
-                    ""
-                ],
-                [
-                    "112:0:0:3::2/64",
-                    "GigabitEthernet1/0"
-                ],
                 [
                     "",
                     ""
@@ -268,62 +171,31 @@
         "Donnees_routeurs": {
             "1": {
                 "Nom": "AS2_R1",
-                "Dynamips_ID": 5,
-                "Attributs": ""
-            },
-            "2": {
-                "Nom": "AS2_R2",
-                "Dynamips_ID": 6,
-                "Attributs": ""
-            },
-            "3": {
-                "Nom": "AS2_R3",
-                "Dynamips_ID": 7,
-                "Attributs": ""
-            },
-            "4": {
-                "Nom": "AS2_R4",
-                "Dynamips_ID": 8,
-                "Attributs": ""
+                "Dynamips_ID": 5
             }
         },
         "Routage_intraAS": {
             "Protocol": "OSPF"
         },
         "Routage_interAS": {
-            "3": {
-                "1": {
-                    "Num_routeur_bordeur_remote": 3,
-                    "Adresse": "2000:21::2/32",
-                    "Interface": "GigabitEthernet3/0"
-                }
-            },
-            "2": {
-                "3": {
-                    "Num_routeur_bordeur_remote": 1,
-                    "Adresse": "2000:32::2/32",
-                    "Interface": "GigabitEthernet3/0"
-                }
-            },
             "1": {
-                "6": {
+                "1": {
                     "Num_routeur_bordeur_remote": 1,
-                    "Adresse": "2000:62::2/32",
-                    "Interface": "GigabitEthernet2/0"
+                    "Adresse": "192.168.1.2/30",
+                    "Interface": "GigabitEthernet1/0"
                 }
             }
         }
     },
     "3": {
         "Nombre_routeur": 1,
-        "Type_AS": "provider",
+        "Type_AS": "ClientA",
         "Matrice_adjacence": [
             [
                 0
             ]
         ],
-        "Masque_reseau": "113::0/48",
-        "Maque_loopback": "5000::0/64",
+        "Masque_reseau": "0.0.0.0/28",
         "Matrice_adressage_interface": [
             [
                 [
@@ -335,38 +207,31 @@
         "Donnees_routeurs": {
             "1": {
                 "Nom": "AS3_R1",
-                "Dynamips_ID": 9,
-                "Attributs": ""
+                "Dynamips_ID": 6
             }
         },
         "Routage_intraAS": {
-            "Protocol": ""
+            "Protocol": "OSPF"
         },
         "Routage_interAS": {
             "1": {
-                "2": {
-                    "Num_routeur_bordeur_remote": 1,
-                    "Adresse": "2000:32::3/32",
-                    "Interface": "GigabitEthernet1/0"
-                },
                 "1": {
-                    "Num_routeur_bordeur_remote": 2,
-                    "Adresse": "2000:31::3/32",
-                    "Interface": "GigabitEthernet2/0"
+                    "Num_routeur_bordeur_remote": 4,
+                    "Adresse": "192.168.2.2/30",
+                    "Interface": "GigabitEthernet1/0"
                 }
             }
         }
     },
     "4": {
         "Nombre_routeur": 1,
-        "Type_AS": "peer",
+        "Type_AS": "ClientB",
         "Matrice_adjacence": [
             [
                 0
             ]
         ],
-        "Masque_reseau": "114::0/48",
-        "Maque_loopback": "5000::0/64",
+        "Masque_reseau": "0.0.0.0/28",
         "Matrice_adressage_interface": [
             [
                 [
@@ -378,18 +243,17 @@
         "Donnees_routeurs": {
             "1": {
                 "Nom": "AS4_R1",
-                "Dynamips_ID": 10,
-                "Attributs": ""
+                "Dynamips_ID": 7
             }
         },
         "Routage_intraAS": {
-            "Protocol": ""
+            "Protocol": "OSPF"
         },
         "Routage_interAS": {
             "1": {
                 "1": {
-                    "Num_routeur_bordeur_remote": 1,
-                    "Adresse": "2000:41::4/32",
+                    "Num_routeur_bordeur_remote": 4,
+                    "Adresse": "192.168.3.2/30",
                     "Interface": "GigabitEthernet1/0"
                 }
             }
@@ -397,14 +261,13 @@
     },
     "5": {
         "Nombre_routeur": 1,
-        "Type_AS": "client",
+        "Type_AS": "ClientB",
         "Matrice_adjacence": [
             [
                 0
             ]
         ],
-        "Masque_reseau": "115::0/48",
-        "Maque_loopback": "5000::0/64",
+        "Masque_reseau": "0.0.0.0/28",
         "Matrice_adressage_interface": [
             [
                 [
@@ -413,100 +276,18 @@
                 ]
             ]
         ],
-        "Donnees_routeurs": {
-            "1": {
-                "Nom": "AS5_R1",
-                "Dynamips_ID": 11,
-                "Attributs": ""
-            }
-        },
+        "Donnees_routeurs": {},
         "Routage_intraAS": {
-            "Protocol": ""
+            "Protocol": "OSPF"
         },
         "Routage_interAS": {
             "1": {
                 "1": {
-                    "Num_routeur_bordeur_remote": 4,
-                    "Adresse": "2000:51::5/32",
-                    "Interface": "GigabitEthernet1/0"
+                    "Num_routeur_bordeur_remote": 1,
+                    "Adresse": "192.168.4.2/30",
+                    "Interface": ""
                 }
             }
-        }
-    },
-    "6": {
-        "Nombre_routeur": 1,
-        "Type_AS": "client",
-        "Matrice_adjacence": [
-            [
-                0
-            ]
-        ],
-        "Masque_reseau": "116::0/48",
-        "Maque_loopback": "5000::0/64",
-        "Matrice_adressage_interface": [
-            [
-                [
-                    "",
-                    ""
-                ]
-            ]
-        ],
-        "Donnees_routeurs": {
-            "1": {
-                "Nom": "AS6_R1",
-                "Dynamips_ID": 12,
-                "Attributs": ""
-            }
-        },
-        "Routage_intraAS": {
-            "Protocol": ""
-        },
-        "Routage_interAS": {
-            "1": {
-                "2": {
-                    "Num_routeur_bordeur_remote": 2,
-                    "Adresse": "2000:62::6/32",
-                    "Interface": "GigabitEthernet1/0"
-                }
-            }
-        }
-    },
-    "Route_map": {
-        "fromprovider": {
-            "Prio": 20,
-            "Set_community": "Provider",
-            "Local_pref": 50,
-            "Match_community": null
-        },
-        "toprovider": {
-            "Prio": 20,
-            "Set_community": null,
-            "Local_pref": null,
-            "Match_community": "Client"
-        },
-        "frompeer": {
-            "Prio": 20,
-            "Set_community": "Peer",
-            "Local_pref": 100,
-            "Match_community": null
-        },
-        "topeer": {
-            "Prio": 20,
-            "Set_community": null,
-            "Local_pref": null,
-            "Match_community": "Client"
-        },
-        "fromclient": {
-            "Prio": 20,
-            "Set_community": "Client",
-            "Local_pref": 150,
-            "Match_community": null
-        },
-        "toclient": {
-            "Prio": 20,
-            "Set_community": null,
-            "Local_pref": null,
-            "Match_community": "Everybody"
         }
     }
 }
