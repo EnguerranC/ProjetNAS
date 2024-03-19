@@ -157,37 +157,6 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     "!\n"
                 ])
 
-            ######### communautées ########
-            
-            if config[liste_AS[i]]["Type_AS"] == "AS" :  #on ajoute les communautées pour tous les routers d'un AS avec un id que l'on peut voir dans le dico tags
-                type_printed = []
-                tags = {"client" : "3:100", "provider" : "2:100", "peer" : "1:100"}
-                for k in range(nombre_AS) :
-                    typ = config[liste_AS[k]]["Type_AS"]
-                    if typ not in type_printed and typ != "AS" :
-                        fichier_cfg.write("ip community-list standard " + typ + " permit " + str(tags[typ]) + "\n" )
-                        type_printed.append(typ)
-                fichier_cfg.write("!\n")
-
-
-            ######### route-map ########
-            
-            if config[liste_AS[i]]["Type_AS"] == "AS" : #si on est dans un AS
-                if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #il s'agit du router border
-                    for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) :
-                        if config[k]["Type_AS"] != "AS" : #s'il ne s'agit pas d'un AS, on fait des route-map
-                            #from
-                            fichier_cfg.writelines([
-                                "route-map from" + config[k]["Type_AS"] + " permit " + str(config["Route_map"]["from" + config[k]["Type_AS"]]["Prio"]) + "\n",
-                                " set community " + str(tags[config[k]["Type_AS"]]) + "\n",
-                                " set local-preference " + str(config["Route_map"]["from" + config[k]["Type_AS"]]["Local_pref"]) + "\n"
-                                "!\n"])
-                            #to
-                            fichier_cfg.write("route-map to" + config[k]["Type_AS"] + " permit " + str(config["Route_map"]["from" + config[k]["Type_AS"]]["Prio"]) + "\n")
-                            if config[k]["Type_AS"] != "client" : # si le remote AS n'est pas un client, on fait du match client
-                                fichier_cfg.write(" match community " + str(tags["client"]) + "\n")
-                            fichier_cfg.write("!\n")
-            
             ######### Redistribute connected ########
             
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "RIPng" : #si le protocole du router est RIP, on active le redistribute connected
