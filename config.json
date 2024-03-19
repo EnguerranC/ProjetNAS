@@ -451,13 +451,7 @@
                 ]
             ]
         ],
-        "Donnees_routeurs": {
-            "1": {
-                "Nom": "AS6_R1",
-                "Dynamips_ID": 12,
-                "Attributs": ""
-            }
-        },
+        "Donnees_routeurs": {},
         "Routage_intraAS": {
             "Protocol": ""
         },
@@ -465,48 +459,10 @@
             "1": {
                 "2": {
                     "Num_routeur_bordeur_remote": 2,
-                    "Adresse": "2000:62::6/32",
-                    "Interface": "GigabitEthernet1/0"
+                    "Adresse": "",
+                    "Interface": ""
                 }
             }
-        }
-    },
-    "Route_map": {
-        "fromprovider": {
-            "Prio": 20,
-            "Set_community": "Provider",
-            "Local_pref": 50,
-            "Match_community": null
-        },
-        "toprovider": {
-            "Prio": 20,
-            "Set_community": null,
-            "Local_pref": null,
-            "Match_community": "Client"
-        },
-        "frompeer": {
-            "Prio": 20,
-            "Set_community": "Peer",
-            "Local_pref": 100,
-            "Match_community": null
-        },
-        "topeer": {
-            "Prio": 20,
-            "Set_community": null,
-            "Local_pref": null,
-            "Match_community": "Client"
-        },
-        "fromclient": {
-            "Prio": 20,
-            "Set_community": "Client",
-            "Local_pref": 150,
-            "Match_community": null
-        },
-        "toclient": {
-            "Prio": 20,
-            "Set_community": null,
-            "Local_pref": null,
-            "Match_community": "Everybody"
         }
     }
 }
