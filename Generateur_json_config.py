@@ -198,6 +198,7 @@ config = {
          }
       }
    },
+   
 }
 """
 Generateur de la base de donnee des routeurs : Num_routeur, Nom, Dynamips_ID
