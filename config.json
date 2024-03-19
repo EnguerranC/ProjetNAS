@@ -276,7 +276,12 @@
                 ]
             ]
         ],
-        "Donnees_routeurs": {},
+        "Donnees_routeurs": {
+            "1": {
+                "Nom": "AS5_R1",
+                "Dynamips_ID": 8
+            }
+        },
         "Routage_intraAS": {
             "Protocol": "OSPF"
         },

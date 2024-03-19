@@ -154,7 +154,7 @@ Nom : unique a tous les routeurs du reseau global et a pour forme AS[Num_AS]_R[N
 Dynamips_ID : unique a tous les routeurs du reseau global
 """
 Dynamips_ID = 1
-for i in range(1,len(config)) :
+for i in range(1,len(config)+1) :
    for j in range(1, config[i]["Nombre_routeur"]+1) :
       Num_routeur = j
       config[i]["Donnees_routeurs"][Num_routeur] = {"Nom":"AS"+str(i)+"_R"+str(j) , "Dynamips_ID":Dynamips_ID}
