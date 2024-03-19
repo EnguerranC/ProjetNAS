@@ -198,45 +198,6 @@ config = {
          }
       }
    },
-   "Route_map" : { # Infos concernant les routes map
-         "fromprovider" : { # Nom de la route map
-            "Prio" : 20, # Priorité de la route map
-            "Set_community" : "Provider", # Communauté associée à la route map
-            "Local_pref" : 50, # Local pref associé à la route map
-            "Match_community" : None # Condition de match a une communauté
-         },
-         "toprovider" : {
-            "Prio" : 20,
-            "Set_community" : None,
-            "Local_pref" : None,
-            "Match_community" : "Client"
-         },
-         "frompeer" : {
-            "Prio" : 20,
-            "Set_community" : "Peer",
-            "Local_pref" : 100,
-            "Match_community" : None
-         },
-         "topeer" : {
-            "Prio" : 20,
-            "Set_community" : None,
-            "Local_pref" : None,
-            "Match_community" : "Client"
-         },
-         "fromclient" :{
-            "Prio" : 20,
-            "Set_community" : "Client",
-            "Local_pref" : 150,
-            "Match_community" : None
-         },
-         "toclient" : {
-            "Prio" : 20,
-            "Set_community" : None,
-            "Local_pref" : None,
-            "Match_community" : "Everybody"
-            
-         }
-      },
 }
 """
 Generateur de la base de donnee des routeurs : Num_routeur, Nom, Dynamips_ID
