@@ -283,11 +283,87 @@
         "Routage_interAS": {
             "1": {
                 "1": {
-                    "Num_routeur_bordeur_remote": 1,
-                    "Adresse": "192.168.4.2/30",
-                    "Interface": ""
+                    "Num_routeur_bordeur_remote": 4,
+                    "Adresse": "2000:51::5/32",
+                    "Interface": "GigabitEthernet1/0"
                 }
             }
+        }
+    },
+    "6": {
+        "Nombre_routeur": 1,
+        "Type_AS": "client",
+        "Matrice_adjacence": [
+            [
+                0
+            ]
+        ],
+        "Masque_reseau": "116::0/48",
+        "Maque_loopback": "5000::0/64",
+        "Matrice_adressage_interface": [
+            [
+                [
+                    "",
+                    ""
+                ]
+            ]
+        ],
+        "Donnees_routeurs": {
+            "1": {
+                "Nom": "AS6_R1",
+                "Dynamips_ID": 12,
+                "Attributs": ""
+            }
+        },
+        "Routage_intraAS": {
+            "Protocol": ""
+        },
+        "Routage_interAS": {
+            "1": {
+                "2": {
+                    "Num_routeur_bordeur_remote": 2,
+                    "Adresse": "2000:62::6/32",
+                    "Interface": "GigabitEthernet1/0"
+                }
+            }
+        }
+    },
+    "Route_map": {
+        "fromprovider": {
+            "Prio": 20,
+            "Set_community": "Provider",
+            "Local_pref": 50,
+            "Match_community": null
+        },
+        "toprovider": {
+            "Prio": 20,
+            "Set_community": null,
+            "Local_pref": null,
+            "Match_community": "Client"
+        },
+        "frompeer": {
+            "Prio": 20,
+            "Set_community": "Peer",
+            "Local_pref": 100,
+            "Match_community": null
+        },
+        "topeer": {
+            "Prio": 20,
+            "Set_community": null,
+            "Local_pref": null,
+            "Match_community": "Client"
+        },
+        "fromclient": {
+            "Prio": 20,
+            "Set_community": "Client",
+            "Local_pref": 150,
+            "Match_community": null
+        },
+        "toclient": {
+            "Prio": 20,
+            "Set_community": null,
+            "Local_pref": null,
+            "Match_community": "Everybody"
         }
     }
 }

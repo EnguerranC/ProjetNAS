@@ -7,10 +7,10 @@ with open("config.json", 'r') as fichier:
 def masque_reseau(adresse) : #fonction qui retourne la partie réseau d'une adresse ipv6
     masque = int(adresse.split('/')[1])
     masque_res = ""
-    liste_adresse = adresse.split(':')
+    liste_adresse = adresse.split('/')[0].split('.')
     for i in range(int(masque/16)) :
-        masque_res +=liste_adresse[i] + ':'
-    return masque_res + f':/{masque}'
+        masque_res += liste_adresse[i] + '.'
+    return masque_res + f'/{masque}'
 
 nombre_routers = 0
 liste_AS = list(config.keys())
