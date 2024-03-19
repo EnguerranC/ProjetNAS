@@ -51,7 +51,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
 
             fichier_cfg.writelines([
                     "interface Loopback0\n",
-                    " ip address 127.0.0." + str(num_router) + " " + str(MasqueToAddress(32)) + "\n"
+                    " ip address 126.0.0." + str(num_router) + " " + str(MasqueToAddress(32)) + "\n"
             ])
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : 
                 fichier_cfg.writelines([
@@ -81,7 +81,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     fichier_cfg.writelines([
                             "interface " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Interface"] + "\n",
                             " negotiation auto\n",
-                            " ip address " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"] + "\n"
+                            " ip address " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split('/')[0] + " " + str(MasqueToAddress(config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split('/')[1])) + "\n"
                         ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : #si l'AS courant est en ospf, il faut mettre le router en passive-interface
                         fichier_cfg.writelines([
@@ -110,15 +110,15 @@ for i in range(nombre_AS) : #on parcours chaque AS
 
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
-                    " neighbor 5000::" + str([e for e in liste_router if e != num_router][k]) + " remote-as " + "11" + liste_AS[i] + "\n",
-                    " neighbor 5000::" + str([e for e in liste_router if e != num_router][k]) + " update-source Loopback0\n"
+                    " neighbor 126.0.0." + str([e for e in liste_router if e != num_router][k]) + " remote-as " + "11" + liste_AS[i] + "\n",
+                    " neighbor 126.0.0." + str([e for e in liste_router if e != num_router][k]) + " update-source Loopback0\n"
                 ])
 
             fichier_cfg.write(" !\n")
 
                     ######### adresse-family ########
 
-            fichier_cfg.write(" address-family ipv6\n")
+            fichier_cfg.write(" address-family ipv4 unicast\n")
             
             if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #il s'agit du router border, on configure le routage inter AS
                 liste_masque=[]
@@ -127,20 +127,10 @@ for i in range(nombre_AS) : #on parcours chaque AS
                         if config[liste_AS[i]]["Matrice_adjacence"][k][l] == 1 and masque_reseau(config[liste_AS[i]]["Matrice_adressage_interface"][k][l][0]) not in liste_masque :
                             fichier_cfg.write("  network " + masque_reseau(config[liste_AS[i]]["Matrice_adressage_interface"][k][l][0]) + "\n")
                             liste_masque.append(masque_reseau(config[liste_AS[i]]["Matrice_adressage_interface"][k][l][0]))
-
-                for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) : # ici la configuration des route map
-                    fichier_cfg.writelines([
-                        "  neighbor " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split("/")[0][:-1] + k + " activate\n"
-                    ])
-                    if config[liste_AS[i]]["Type_AS"] == "AS" and config[k]["Type_AS"] != "AS" : # on ne configure pas les route-map pour les AS
-                        fichier_cfg.writelines([
-                            "  neighbor " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split("/")[0][:-1] + k + " route-map from" + config[k]["Type_AS"] + " in\n",
-                            "  neighbor " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split("/")[0][:-1] + k + " route-map to" + config[k]["Type_AS"] + " out\n"
-                        ])
                             
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
-                    "  neighbor 5000::" + str([e for e in liste_router if e != num_router][k]) + " activate\n"
+                    "  neighbor 126.0.0." + str([e for e in liste_router if e != num_router][k]) + " activate\n"
                 ])
 
             if config[liste_AS[i]]["Type_AS"] == "client" :
