@@ -290,7 +290,7 @@
                 "1": {
                     "Num_routeur_bordeur_remote": 1,
                     "Adresse": "192.168.4.2/30",
-                    "Interface": ""
+                    "Interface": "GigabitEthernet1/0"
                 }
             }
         }

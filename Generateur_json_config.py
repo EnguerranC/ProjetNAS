@@ -190,7 +190,7 @@ def Adressage_AS(Num_AS , Matrice_adjacence, Nombre_routeur) :
 """
 Programme principal
 """
-for i in range(len(config)-1) :
+for i in range(len(config)) :
    Adressage_AS(i+1, config[i+1]["Matrice_adjacence"], config[i+1]["Nombre_routeur"])
 
 fichier = open("config.json","w") # Creation du fichier json
