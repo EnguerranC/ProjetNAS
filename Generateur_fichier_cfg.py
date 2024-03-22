@@ -55,7 +55,8 @@ for i in range(nombre_AS) : #on parcours chaque AS
             ])
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : 
                 fichier_cfg.writelines([
-                    " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n"
+                    " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n",
+                    " no shutdown\n"
                 ])
             fichier_cfg.write("!\n")
 
@@ -70,7 +71,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                         fichier_cfg.writelines([
-                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n"
+                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + " secondaries none\n"
                         ])
                     fichier_cfg.write("!\n")
 
@@ -85,7 +86,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                         ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : #si l'AS courant est en ospf, il faut mettre le router en passive-interface
                         fichier_cfg.writelines([
-                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n",
+                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + " secondaries none\n",
                             "!\n",
                             "router ospf " + liste_AS[i] + "\n",
                             " passive-interface " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Interface"] + "\n"
@@ -104,8 +105,10 @@ for i in range(nombre_AS) : #on parcours chaque AS
 
             if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #si c'est un router de bordure, on ajoute les neighbors des autres AS
                 for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) :
+                    num_router_remote = str(config[liste_AS[i]]["Routage_interAS"][str(j+1)][k]["Num_routeur_bordeur_remote"])
+                    print(f"num AS : {i+1}, num router : {j+1}, num AS remote : {k}, num router remote : {num_router_remote}")
                     fichier_cfg.writelines([
-                        " neighbor " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split("/")[0][:-1] + k + " remote-as " + "11" + k + "\n"
+                        " neighbor " + config[k]["Routage_interAS"][num_router_remote][str(i+1)]["Adresse"].split("/")[0] + " remote-as " + "11" + k + "\n"
                     ])
 
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
@@ -133,10 +136,6 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     "  neighbor 126.0.0." + str([e for e in liste_router if e != num_router][k]) + " activate\n"
                 ])
 
-            if config[liste_AS[i]]["Type_AS"] == "client" :
-                fichier_cfg.write("  network " + config[liste_AS[i]]["Maque_loopback"].split("::")[0] + "::" + str(num_router) + "/128\n")
-            fichier_cfg.writelines([" exit-address-family\n", "!\n"])
-
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                 fichier_cfg.writelines([
                     "ipv6 router ospf " + liste_AS[i] + "\n",
@@ -144,9 +143,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     "!\n"
                 ])
 
-            ######### end ########
-                
-            
+            ######### end ########           
 
             fichier_cfg.writelines([
                 "end\n"
