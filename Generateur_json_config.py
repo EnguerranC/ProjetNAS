@@ -85,7 +85,7 @@ config = {
    },
    3 : {
       "Nombre_routeur" : 1,
-      "Type_AS" : "ClientA",
+      "Type_AS" : "ClientB",
       "Matrice_adjacence" : [[0]],
       "Masque_reseau" : "0.0.0.0/28",
       "Matrice_adressage_interface" : Matrice_addressage_vide([], 1),
@@ -97,7 +97,7 @@ config = {
       "Routage_interAS":{
          1 : {
             1 : {
-               "Num_routeur_bordeur_remote" : 4,
+               "Num_routeur_bordeur_remote" : 1,
                "Adresse" : "192.168.2.2/30",
                "Interface" : ""
             }
@@ -106,7 +106,7 @@ config = {
    },
    4 : {
       "Nombre_routeur" : 1,
-      "Type_AS" : "ClientB",
+      "Type_AS" : "ClientA",
       "Matrice_adjacence" : [[0]],
       "Masque_reseau" : "0.0.0.0/28",
       "Matrice_adressage_interface" : Matrice_addressage_vide([], 1),
@@ -139,7 +139,7 @@ config = {
       "Routage_interAS":{
          1 : {
             1 : {
-               "Num_routeur_bordeur_remote" : 1,
+               "Num_routeur_bordeur_remote" : 4,
                "Adresse" : "192.168.4.2/30",
                "Interface" : ""
             }
