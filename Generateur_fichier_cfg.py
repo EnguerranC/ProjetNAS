@@ -5,14 +5,6 @@ with open("config.json", 'r') as fichier:
     # Charger le contenu JSON dans une variable Python (ici, un dictionnaire)
     config = json.load(fichier)
 
-def masque_reseau(adresse) : #fonction qui retourne la partie réseau d'une adresse ipv6
-    masque = int(adresse.split('/')[1])
-    masque_res = ""
-    liste_adresse = adresse.split('/')[0].split('.')
-    for i in range(int(masque/8)) :
-        masque_res += liste_adresse[i] + '.'
-    return masque_res + f'/{masque}'
-
 def MasqueToAddress(masque) :
     address = ""
     masque = int(masque)
@@ -136,7 +128,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 for k in range(1, nombre_routers_AS) :
                     for l in range(k) :
                         if config[liste_AS[i]]["Matrice_adjacence"][k][l] == 1 :
-                            fichier_cfg.write("  network " + f"192.168.0.{4*(k-1)} {MasqueToAddress(32-math.ceil(math.log2(4*nombre_reseaux)))}" + "\n")
+                            fichier_cfg.write("  network " + f"192.168.0.{4*(k-1)} {MasqueToAddress(30)}" + "\n")
                         
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
