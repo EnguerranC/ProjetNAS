@@ -5,7 +5,7 @@ with open("config.json", 'r') as fichier:
     # Charger le contenu JSON dans une variable Python (ici, un dictionnaire)
     config = json.load(fichier)
 
-def MasqueToAddress(masque) :
+def MasqueToAddress(masque) : #traduit un masque en adresse
     address = ""
     masque = int(masque)
     for i in range (4) :
@@ -20,14 +20,8 @@ def MasqueToAddress(masque) :
         address += ".0"
     return address
 
-nombre_routers = 0
-liste_AS = list(config.keys())
-liste_AS = [e for e in liste_AS if e != "Route_map"] #la liste des numeros des AS
+liste_AS = list(config.keys()) #la liste des numeros des AS
 nombre_AS = len(liste_AS)
-
-for i in range(nombre_AS):
-    nombre_routers += int(config[liste_AS[i]]["Nombre_routeur"])
-
 
 for i in range(nombre_AS) : #on parcours chaque AS
     nombre_routers_AS = config[liste_AS[i]]["Nombre_routeur"] #le nombre de routers dans l'AS
@@ -61,7 +55,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 ])
             fichier_cfg.write("!\n")
 
-            ######### interfaces ########
+            ######### interfaces intra AS ########
 
             for k in range(config[liste_AS[i]]["Nombre_routeur"]) : 
                 if config[liste_AS[i]]["Matrice_adjacence"][j][k] == 1 : # S'il y a un lien on crée une interface
@@ -76,14 +70,15 @@ for i in range(nombre_AS) : #on parcours chaque AS
                         ])
                     fichier_cfg.write("!\n")
 
-                    ######### interfaces entre les borders
+            ######### interfaces inter AS ########
 
             if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #si c'est un router de bordure
                 for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) :
+                    address_interface = config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split('/')
                     fichier_cfg.writelines([
                             "interface " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Interface"] + "\n",
                             " negotiation auto\n",
-                            " ip address " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split('/')[0] + " " + str(MasqueToAddress(config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split('/')[1])) + "\n"
+                            " ip address " + address_interface[0] + " " + str(MasqueToAddress(address_interface[1])) + "\n"
                         ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : #si l'AS courant est en ospf, il faut mettre le router en passive-interface
                         fichier_cfg.writelines([
