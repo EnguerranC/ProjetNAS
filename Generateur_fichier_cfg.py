@@ -1,4 +1,5 @@
 import json
+import math
 
 with open("config.json", 'r') as fichier:
     # Charger le contenu JSON dans une variable Python (ici, un dictionnaire)
@@ -39,11 +40,19 @@ for i in range(nombre_AS):
 for i in range(nombre_AS) : #on parcours chaque AS
     nombre_routers_AS = config[liste_AS[i]]["Nombre_routeur"] #le nombre de routers dans l'AS
     liste_router = [config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Dynamips_ID"] for j in range(nombre_routers_AS)] #liste des routers dans l'AS
+    nombre_reseaux = 0
+
+    if nombre_routers_AS > 0 :
+        for j in range(1, nombre_routers_AS) :
+            for k in range(j) :
+                if config[liste_AS[i]]["Matrice_adjacence"][j][k] == 1 :
+                    nombre_reseaux += 1
 
     for j in range(config[liste_AS[i]]["Nombre_routeur"]) : #on setup chaque router dans l'AS
         num_router = config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Dynamips_ID"] #le numero du router
+        adresses_routers_remote = [] #liste des adresses des routers d'autres AS
 
-        with open('fichiers_cfg/R' + str(config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Dynamips_ID"]) + "_configs_i" + str(num_router) + "_startup-config.cfg",'w') as fichier_cfg :
+        with open('fichiers_cfg/' + "i" + str(num_router) + "_startup-config.cfg",'w') as fichier_cfg :
 
             fichier_cfg.writelines(['!\n', 'hostname ' + config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Nom"] + '\n', '!\n'])
 
@@ -55,7 +64,8 @@ for i in range(nombre_AS) : #on parcours chaque AS
             ])
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : 
                 fichier_cfg.writelines([
-                    " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n"
+                    " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n",
+                    " no shutdown\n"
                 ])
             fichier_cfg.write("!\n")
 
@@ -70,7 +80,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                         fichier_cfg.writelines([
-                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n"
+                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + " secondaries none\n"
                         ])
                     fichier_cfg.write("!\n")
 
@@ -85,7 +95,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                         ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : #si l'AS courant est en ospf, il faut mettre le router en passive-interface
                         fichier_cfg.writelines([
-                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n",
+                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + " secondaries none\n",
                             "!\n",
                             "router ospf " + liste_AS[i] + "\n",
                             " passive-interface " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Interface"] + "\n"
@@ -104,8 +114,10 @@ for i in range(nombre_AS) : #on parcours chaque AS
 
             if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #si c'est un router de bordure, on ajoute les neighbors des autres AS
                 for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) :
+                    num_router_remote = str(config[liste_AS[i]]["Routage_interAS"][str(j+1)][k]["Num_routeur_bordeur_remote"])
+                    adresses_routers_remote.append(config[k]["Routage_interAS"][num_router_remote][str(i+1)]["Adresse"].split("/")[0])
                     fichier_cfg.writelines([
-                        " neighbor " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split("/")[0][:-1] + k + " remote-as " + "11" + k + "\n"
+                        " neighbor " + adresses_routers_remote[-1] + " remote-as " + "11" + k + "\n"
                     ])
 
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
@@ -121,21 +133,22 @@ for i in range(nombre_AS) : #on parcours chaque AS
             fichier_cfg.write(" address-family ipv4 unicast\n")
             
             if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #il s'agit du router border, on configure le routage inter AS
-                liste_masque=[]
-                for k in range(nombre_routers_AS) :
-                    for l in range(nombre_routers_AS) :
-                        if config[liste_AS[i]]["Matrice_adjacence"][k][l] == 1 and masque_reseau(config[liste_AS[i]]["Matrice_adressage_interface"][k][l][0]) not in liste_masque :
-                            fichier_cfg.write("  network " + masque_reseau(config[liste_AS[i]]["Matrice_adressage_interface"][k][l][0]) + "\n")
-                            liste_masque.append(masque_reseau(config[liste_AS[i]]["Matrice_adressage_interface"][k][l][0]))
-                            
+                for k in range(1, nombre_routers_AS) :
+                    for l in range(k) :
+                        if config[liste_AS[i]]["Matrice_adjacence"][k][l] == 1 :
+                            fichier_cfg.write("  network " + f"192.168.0.{4*(k-1)} {MasqueToAddress(32-math.ceil(math.log2(4*nombre_reseaux)))}" + "\n")
+                        
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
                     "  neighbor 126.0.0." + str([e for e in liste_router if e != num_router][k]) + " activate\n"
                 ])
+            for k in range(len(adresses_routers_remote)) :
+                fichier_cfg.writelines([
+                    "  neighbor " + adresses_routers_remote[k] + " activate\n"
+                ])
 
-            if config[liste_AS[i]]["Type_AS"] == "client" :
-                fichier_cfg.write("  network " + config[liste_AS[i]]["Maque_loopback"].split("::")[0] + "::" + str(num_router) + "/128\n")
-            fichier_cfg.writelines([" exit-address-family\n", "!\n"])
+            fichier_cfg.write("  exit-address-family\n")
+            fichier_cfg.write(" !\n")
 
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                 fichier_cfg.writelines([
@@ -144,9 +157,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     "!\n"
                 ])
 
-            ######### end ########
-                
-            
+            ######### end ########           
 
             fichier_cfg.writelines([
                 "end\n"
