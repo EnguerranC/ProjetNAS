@@ -44,7 +44,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
         num_router = config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Dynamips_ID"] #le numero du router
         adresses_routers_remote = [] #liste des adresses des routers d'autres AS
 
-        with open('fichiers_cfg/' + "i" + str(num_router) + "_startup-config.cfg",'w') as fichier_cfg :
+        with open('fichiers_cfg/' + "R"+ str(num_router) +"_configs_i" + str(num_router) + "_startup-config.cfg",'w') as fichier_cfg :
 
             fichier_cfg.writelines(['!\n', 'hostname ' + config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Nom"] + '\n', '!\n'])
 
@@ -72,7 +72,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                         fichier_cfg.writelines([
-                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + " secondaries none\n"
+                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + " \n"
                         ])
                     fichier_cfg.write("!\n")
 
