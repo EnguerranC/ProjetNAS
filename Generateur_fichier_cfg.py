@@ -101,7 +101,6 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 "router bgp " + "11" + liste_AS[i] + "\n",
                 " bgp router-id " + 3*(str(num_router) + ".") + str(num_router) + "\n",
                 " bgp log-neighbor-changes\n",
-                " no bgp default ipv4-unicast\n"
             ])
 
             if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #si c'est un router de bordure, on ajoute les neighbors des autres AS
