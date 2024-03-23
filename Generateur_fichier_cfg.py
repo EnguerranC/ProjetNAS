@@ -143,7 +143,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
 
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                 fichier_cfg.writelines([
-                    "ipv6 router ospf " + liste_AS[i] + "\n",
+                    "router ospf " + liste_AS[i] + "\n",
                     " router-id " + 3*(str(num_router) + ".") + str(num_router) + "\n",
                     "!\n"
                 ])
