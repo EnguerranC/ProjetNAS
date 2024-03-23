@@ -127,7 +127,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 for k in range(1, nombre_routers_AS) :
                     for l in range(k) :
                         if config[liste_AS[i]]["Matrice_adjacence"][k][l] == 1 :
-                            fichier_cfg.write("  network " + f"192.168.0.{4*(k-1)} {MasqueToAddress(30)}" + "\n")
+                            fichier_cfg.write("  network " + f"192.168.0.{4*(k-1)} mask {MasqueToAddress(30)}" + "\n")
                         
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
