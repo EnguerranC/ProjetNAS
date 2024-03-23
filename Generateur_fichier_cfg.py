@@ -138,8 +138,8 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     "  neighbor " + adresses_routers_remote[k] + " activate\n"
                 ])
 
-            fichier_cfg.write("  exit-address-family\n")
-            fichier_cfg.write(" !\n")
+            fichier_cfg.write(" exit-address-family\n")
+            fichier_cfg.write("!\n")
 
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                 fichier_cfg.writelines([
