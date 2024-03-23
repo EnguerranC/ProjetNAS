@@ -87,7 +87,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                         ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : #si l'AS courant est en ospf, il faut mettre le router en passive-interface
                         fichier_cfg.writelines([
-                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + " secondaries none\n",
+                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + " \n",
                             "!\n",
                             "router ospf " + liste_AS[i] + "\n",
                             " passive-interface " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Interface"] + "\n"
