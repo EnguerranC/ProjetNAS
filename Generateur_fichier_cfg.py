@@ -5,7 +5,7 @@ with open("config.json", 'r') as fichier:
     # Charger le contenu JSON dans une variable Python (ici, un dictionnaire)
     config = json.load(fichier)
 
-def MasqueToAddress(masque) : #traduit un masque en adresse
+def MasqueToAddress(masque) :
     address = ""
     masque = int(masque)
     for i in range (4) :
@@ -20,8 +20,14 @@ def MasqueToAddress(masque) : #traduit un masque en adresse
         address += ".0"
     return address
 
-liste_AS = list(config.keys()) #la liste des numeros des AS
+nombre_routers = 0
+liste_AS = list(config.keys())
+liste_AS = [e for e in liste_AS if e != "Route_map"] #la liste des numeros des AS
 nombre_AS = len(liste_AS)
+
+for i in range(nombre_AS):
+    nombre_routers += int(config[liste_AS[i]]["Nombre_routeur"])
+
 
 for i in range(nombre_AS) : #on parcours chaque AS
     nombre_routers_AS = config[liste_AS[i]]["Nombre_routeur"] #le nombre de routers dans l'AS
@@ -38,7 +44,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
         num_router = config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Dynamips_ID"] #le numero du router
         adresses_routers_remote = [] #liste des adresses des routers d'autres AS
 
-        with open('fichiers_cfg/' + "i" + str(num_router) + "_startup-config.cfg",'w') as fichier_cfg :
+        with open('fichiers_cfg/' + "R"+ str(num_router) +"_configs_i" + str(num_router) + "_startup-config.cfg",'w') as fichier_cfg :
 
             fichier_cfg.writelines(['!\n', 'hostname ' + config[liste_AS[i]]["Donnees_routeurs"][f"{j+1}"]["Nom"] + '\n', '!\n'])
 
@@ -55,7 +61,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 ])
             fichier_cfg.write("!\n")
 
-            ######### interfaces intra AS ########
+            ######### interfaces ########
 
             for k in range(config[liste_AS[i]]["Nombre_routeur"]) : 
                 if config[liste_AS[i]]["Matrice_adjacence"][j][k] == 1 : # S'il y a un lien on crée une interface
@@ -66,23 +72,22 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                         fichier_cfg.writelines([
-                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n"
+                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + " \n"
                         ])
                     fichier_cfg.write("!\n")
 
-            ######### interfaces inter AS ########
+                    ######### interfaces entre les borders
 
             if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #si c'est un router de bordure
                 for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) :
-                    address_interface = config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split('/')
                     fichier_cfg.writelines([
                             "interface " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Interface"] + "\n",
                             " negotiation auto\n",
-                            " ip address " + address_interface[0] + " " + str(MasqueToAddress(address_interface[1])) + "\n"
+                            " ip address " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split('/')[0] + " " + str(MasqueToAddress(config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Adresse"].split('/')[1])) + "\n"
                         ])
                     if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" : #si l'AS courant est en ospf, il faut mettre le router en passive-interface
                         fichier_cfg.writelines([
-                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + "\n",
+                            " ip ospf " + liste_AS[i] + " area " + liste_AS[i] + " \n",
                             "!\n",
                             "router ospf " + liste_AS[i] + "\n",
                             " passive-interface " + config[liste_AS[i]]["Routage_interAS"][str(j+1)][str(k)]["Interface"] + "\n"
@@ -96,7 +101,6 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 "router bgp " + "11" + liste_AS[i] + "\n",
                 " bgp router-id " + 3*(str(num_router) + ".") + str(num_router) + "\n",
                 " bgp log-neighbor-changes\n",
-                " no bgp default ipv4-unicast\n"
             ])
 
             if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #si c'est un router de bordure, on ajoute les neighbors des autres AS
@@ -123,7 +127,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 for k in range(1, nombre_routers_AS) :
                     for l in range(k) :
                         if config[liste_AS[i]]["Matrice_adjacence"][k][l] == 1 :
-                            fichier_cfg.write("  network " + f"192.168.0.{4*(k-1)} {MasqueToAddress(30)}" + "\n")
+                            fichier_cfg.write("  network " + f"192.168.0.{4*(k-1)} mask {MasqueToAddress(30)}" + "\n")
                         
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
@@ -134,12 +138,12 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     "  neighbor " + adresses_routers_remote[k] + " activate\n"
                 ])
 
-            fichier_cfg.write("  exit-address-family\n")
-            fichier_cfg.write(" !\n")
+            fichier_cfg.write(" exit-address-family\n")
+            fichier_cfg.write("!\n")
 
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                 fichier_cfg.writelines([
-                    "ipv6 router ospf " + liste_AS[i] + "\n",
+                    "router ospf " + liste_AS[i] + "\n",
                     " router-id " + 3*(str(num_router) + ".") + str(num_router) + "\n",
                     "!\n"
                 ])
