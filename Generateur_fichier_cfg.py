@@ -67,13 +67,6 @@ for i in range(nombre_AS) : #on parcours chaque AS
                             " exit-address-family\n",
                             "!\n"
                         ])
-                
-                if config[liste_AS[i]]["Type_AS"] == "AS" :
-                    fichier_cfg.writelines([
-                        "mpls label protocol ldp\n",
-                        "multilink bundle-name authenticated\n",
-                        "!\n"
-                    ])
 
             ######### loopback ########
 
