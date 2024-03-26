@@ -156,7 +156,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     fichier_cfg.writelines([
                         "  neighbor 126.0.0." + str([e for e in liste_router if e != num_router][k]) + " activate\n"
                     ])
-                fichier_cfg.write(" exit-address-family\n!\n")
+                fichier_cfg.write(" exit-address-family\n !\n")
 
                 
                 if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #s'il s'agit du router border, on configure le routage inter AS
