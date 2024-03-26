@@ -128,8 +128,8 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     fichier_cfg.writelines([
                         " neighbor " + adresses_routers_remote[-1] + " remote-as " + "11" + k + "\n"
                     ])
-            else :
-                fichier_cfg.write(" no bgp default ipv4-unicast\n")
+            # else :
+            #     fichier_cfg.write(" no bgp default ipv4-unicast\n")
 
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
