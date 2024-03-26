@@ -121,8 +121,9 @@ for i in range(nombre_AS) : #on parcours chaque AS
             fichier_cfg.writelines([
                 "router bgp " + "11" + liste_AS[i] + "\n",
                 " bgp router-id " + 3*(str(num_router) + ".") + str(num_router) + "\n",
-                " bgp log-neighbor-changes\n",
+                " bgp log-neighbor-changes\n"
             ])
+
 
             if "Client" in config[liste_AS[i]]["Type_AS"] : #si c'est un client
                 for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) :
@@ -131,7 +132,9 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     fichier_cfg.writelines([
                         " neighbor " + adresses_routers_remote[-1] + " remote-as " + "11" + k + "\n"
                     ])
-
+            else :
+                fichier_cfg.write(" no bgp default ipv4-unicast\n")
+                
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
                     " neighbor 126.0.0." + str([e for e in liste_router if e != num_router][k]) + " remote-as " + "11" + liste_AS[i] + "\n",
