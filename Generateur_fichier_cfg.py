@@ -62,6 +62,9 @@ for i in range(nombre_AS) : #on parcours chaque AS
                             f" rd 11{liste_AS[i]}:11{k+1}\n",
                             f" route-target export 11{liste_AS[i]}:100{k+1}\n",
                             f" route-target import 11{liste_AS[i]}:100{k+1}\n",
+                            " !\n",
+                            " address-family ipv4\n",
+                            " exit-address-family\n",
                             "!\n"
                         ])
                 
@@ -134,7 +137,7 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     ])
             else :
                 fichier_cfg.write(" no bgp default ipv4-unicast\n")
-                
+
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
                     " neighbor 126.0.0." + str([e for e in liste_router if e != num_router][k]) + " remote-as " + "11" + liste_AS[i] + "\n",
