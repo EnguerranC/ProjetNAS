@@ -120,7 +120,6 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 " bgp log-neighbor-changes\n"
             ])
 
-
             if "Client" in config[liste_AS[i]]["Type_AS"] : #si c'est un client
                 for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) :
                     num_router_remote = str(config[liste_AS[i]]["Routage_interAS"][str(j+1)][k]["Num_routeur_bordeur_remote"])
@@ -128,8 +127,6 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     fichier_cfg.writelines([
                         " neighbor " + adresses_routers_remote[-1] + " remote-as " + "11" + k + "\n"
                     ])
-            # else :
-            #     fichier_cfg.write(" no bgp default ipv4-unicast\n")
 
             for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
                 fichier_cfg.writelines([
@@ -145,6 +142,11 @@ for i in range(nombre_AS) : #on parcours chaque AS
                 fichier_cfg.writelines([
                     " address-family ipv4\n",
                     "  neighbor " + adresses_routers_remote[-1] + " activate\n",
+                ])
+                if "Client" in config[liste_AS[i]]["Type_AS"] : #il s'agit du router border, on configure le routage inter AS
+                    fichier_cfg.write("  network " + f"192.168.{int(liste_AS[i])-1}.0 mask {MasqueToAddress(30)}" + "\n")
+
+                fichier_cfg.writelines([
                     " exit-address-family\n",
                     " !\n"
                 ])
