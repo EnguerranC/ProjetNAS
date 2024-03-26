@@ -134,8 +134,33 @@ for i in range(nombre_AS) : #on parcours chaque AS
                     "  neighbor " + adresses_routers_remote[k] + " activate\n"
                 ])
 
+<<<<<<< HEAD
             fichier_cfg.write("  exit-address-family\n")
             fichier_cfg.write(" !\n")
+=======
+            else :
+                fichier_cfg.write(" address-family vpnv4\n")
+                for k in range(config[liste_AS[i]]["Nombre_routeur"] - 1) :
+                    fichier_cfg.writelines([
+                        "  neighbor 126.0.0." + str([e for e in liste_router if e != num_router][k]) + " activate\n"
+                    ])
+                fichier_cfg.write(" exit-address-family\n !\n")
+
+                
+                if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) : #s'il s'agit du router border, on configure le routage inter AS
+                    for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) :
+                        fichier_cfg.writelines([
+                            " address-family ipv4 vrf " + config[k]["Type_AS"] + "\n",
+                        ])
+                        num_router_remote = str(config[liste_AS[i]]["Routage_interAS"][str(j+1)][k]["Num_routeur_bordeur_remote"])
+                        adresses_routers_remote.append(config[k]["Routage_interAS"][num_router_remote][str(i+1)]["Adresse"].split("/")[0])
+                        fichier_cfg.writelines([
+                            "  neighbor " + adresses_routers_remote[-1] + " remote-as " + "11" + k + "\n",
+                            "  neighbor " + adresses_routers_remote[-1] + " activate\n",
+                            " exit-address-family\n"
+                        ])
+                        fichier_cfg.write(" !\n")
+>>>>>>> 1d94ab6e991fe8ae65f3d22b681e8a4506885514
 
             if config[liste_AS[i]]["Routage_intraAS"]["Protocol"] == "OSPF" :
                 fichier_cfg.writelines([
