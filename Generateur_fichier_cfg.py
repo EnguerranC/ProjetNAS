@@ -56,12 +56,16 @@ for i in range(nombre_AS) : #on parcours chaque AS
 
             if config[liste_AS[i]]["Type_AS"] == "AS" :
                 if str(j+1) in list(config[liste_AS[i]]["Routage_interAS"].keys()) :
-                    for k in range(len(liste_clients)) :
+                    for k in list(config[liste_AS[i]]["Routage_interAS"][str(j+1)].keys()) :
                         fichier_cfg.writelines([
-                            f"vrf definition {liste_clients[k]}\n",
-                            f" rd 11{liste_AS[i]}:11{k+1}\n",
-                            f" route-target export 11{liste_AS[i]}:100{k+1}\n",
-                            f" route-target import 11{liste_AS[i]}:100{k+1}\n",
+                            f"vrf definition {liste_clients[int(k)-2]}\n",
+                            f" rd 11{liste_AS[i]}:11{int(k)-1}\n",
+                            f" route-target export 11{liste_AS[i]}:100{int(k)-1}\n",
+                        ])
+                        for l in range(len(liste_clients)) : # On utilise la matrice d'adjacence vrf pour déterminer quel rt importer
+                            if config[liste_AS[i]]["Matrice_vrf"][int(k)-2][l] == 1 :
+                                fichier_cfg.write(f" route-target import 11{liste_AS[i]}:100{l+1}\n")
+                        fichier_cfg.writelines([
                             " !\n",
                             " address-family ipv4\n",
                             " exit-address-family\n",

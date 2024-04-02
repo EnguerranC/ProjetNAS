@@ -12,9 +12,9 @@ def trouve_repertoire_cible(dests, nom_fichier_déjà_dedans):
 
 if __name__=="__main__":
     #chemin vers répertoire contenant les fichiers cfg à déplacer
-    source = "C:\\Users\\tangs\\OneDrive\\Documents\\GitHub\\ProjetNAS\\fichiers_cfg\\"
+    source = "fichiers_cfg"
     #chemin vers dynamips\ du projet
-    dynamips="C:\\Users\\tangs\\OneDrive\\Documents\\Ecole\\INSA\\TC1\\NAS\\NAS_config_manuel\\project-files\\dynamips\\"
+    dynamips="C:\\Users\\{}\\GNS3\\projects\\NAS project\\project-files\\dynamips".format(os.getenv("username"))
     dests=[]
     result=[]
     nb_routeurs = 8
