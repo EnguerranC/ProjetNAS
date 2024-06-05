@@ -30,6 +30,11 @@ config = {
                              [0,0,1,0]],
       "Masque_reseau" : "192.168.0.0/28",
       "Matrice_adressage_interface" : Matrice_addressage_vide([], 4),
+      "Matrice_vrf" : [[0,0,0,1,1],
+                       [0,0,1,0,1],
+                       [0,1,0,0,0],
+                       [1,0,0,0,0],
+                       [1,1,0,0,0]], # Matrice d'adjacence des clients via les vrf/vpn
       "Donnees_routeurs" : {
       },
       "Routage_intraAS" : { # Infos concernant le routage intraAS
@@ -57,6 +62,11 @@ config = {
             5 : { # Numero de l'AS remote
                "Num_routeur_bordeur_remote" : 1, # Numero du routeur remote
                "Adresse" : "192.168.4.1/30", # Adresse de l'interface liée au routeur remote
+               "Interface" : "" # Interface liée au routeur remote
+            },
+            6 : { # Numero de l'AS remote
+               "Num_routeur_bordeur_remote" : 1, # Numero du routeur remote
+               "Adresse" : "192.168.5.1/30", # Adresse de l'interface liée au routeur remote
                "Interface" : "" # Interface liée au routeur remote
             }
          }
@@ -106,7 +116,7 @@ config = {
    },
    4 : {
       "Nombre_routeur" : 1,
-      "Type_AS" : "ClientA",
+      "Type_AS" : "ClientC",
       "Matrice_adjacence" : [[0]],
       "Masque_reseau" : "0.0.0.0/28",
       "Matrice_adressage_interface" : Matrice_addressage_vide([], 1),
@@ -127,7 +137,7 @@ config = {
    },
    5 : {
       "Nombre_routeur" : 1,
-      "Type_AS" : "ClientB",
+      "Type_AS" : "ClientD",
       "Matrice_adjacence" : [[0]],
       "Masque_reseau" : "0.0.0.0/28",
       "Matrice_adressage_interface" : Matrice_addressage_vide([], 1),
@@ -141,6 +151,27 @@ config = {
             1 : {
                "Num_routeur_bordeur_remote" : 4,
                "Adresse" : "192.168.4.2/30",
+               "Interface" : ""
+            }
+         }
+      }
+   },
+   6 : {
+      "Nombre_routeur" : 1,
+      "Type_AS" : "ClientE",
+      "Matrice_adjacence" : [[0]],
+      "Masque_reseau" : "0.0.0.0/28",
+      "Matrice_adressage_interface" : Matrice_addressage_vide([], 1),
+      "Donnees_routeurs" : {
+      },
+      "Routage_intraAS" : {
+         "Protocol" : "OSPF"
+      },
+      "Routage_interAS":{
+         1 : {
+            1 : {
+               "Num_routeur_bordeur_remote" : 4,
+               "Adresse" : "192.168.5.2/30",
                "Interface" : ""
             }
          }
